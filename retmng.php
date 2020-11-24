@@ -1,12 +1,20 @@
 <?php require_once 'core/init.php';
         require_once 'core/init2.php';
-admin();
-if (!isAdmin()){
-    redirectTo ('dash.php');
-}
+
 ?>
 
-    <?php require_once 'inc/header-2.php'; ?>
+<?php if (isset($_REQUEST['submit'])) {
+
+    $sql = mysqli_query($con, "update tbl_ppt set opn_bal_32 ='" . htmlspecialchars($_REQUEST['opn_bal_32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['ppt_32'], ENT_QUOTES) . "', dam_32='" . htmlspecialchars($_REQUEST['dam_32'], ENT_QUOTES) . "', stock_bal_32='" . htmlspecialchars($_REQUEST['stock_bal_32'], ENT_QUOTES) . "', ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_rev_32'], ENT_QUOTES) . "', opn_bal_64 ='" . htmlspecialchars($_REQUEST['opn_bal_64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['ppt_64'], ENT_QUOTES) . "', dam_64='" . htmlspecialchars($_REQUEST['dam_64'], ENT_QUOTES) . "', stock_bal_64='" . htmlspecialchars($_REQUEST['stock_bal_64'], ENT_QUOTES) . "', ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_rev_64'], ENT_QUOTES) . "' WHERE id ='" . htmlspecialchars($_REQUEST['id'], ENT_QUOTES) . "'") or die();
+        if (!isset($sql)) {
+            $errors[] = "There was problem updating the entry";
+        } else {
+            $session->message("Return Entry Updated Successfully");
+            header("Location:retmng.php");
+        }
+}
+?>
+    <?php require_once 'inc/header.php'; ?>
 <!-- Page content -->
 						<div class="container-fluid pt-8">
 							<div class="page-header mt-0 shadow p-3">
@@ -15,6 +23,7 @@ if (!isAdmin()){
 									<li class="breadcrumb-item active" aria-current="page">Manage Returns</li>
 								</ol>
 							</div>
+                            <?php success($message); error($errors); ?>
                             <?php if (isset($_REQUEST['preview'])) {
                                 $sqlquery = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE missionid='" . htmlspecialchars($_REQUEST['preview'], ENT_QUOTES) . "' ");
 
@@ -26,9 +35,9 @@ if (!isAdmin()){
                                     <div class="modal-dialog modal-lg" role="document" tabindex="1">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h2 class="modal-title" ><?php echo $p['missionid']; ?> PASSPORT RETURN SUMMARY</h2>
+                                                <h2 class="modal-title" ><?php echo $p['missionid']." ".$p['month']; ?> PASSPORT RETURN SUMMARY</h2>
                                                 <button type="button" class="close" aria-label="Close">
-                                                    <a href="return-manager.php"><span aria-hidden="true">&times;</span></a>
+                                                    <a href="retmng.php"><span aria-hidden="true">&times;</span></a>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
@@ -79,6 +88,113 @@ if (!isAdmin()){
                                 <?php }
                             }
                             ?>
+
+
+
+                              <?php  if (isset($_REQUEST['edit'])) {
+                                $sql = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" . htmlspecialchars($_REQUEST['edit'], ENT_QUOTES) . "' ");
+
+                                if(mysqli_num_rows($sql) == 0) {
+                                    echo "<h3 style=\"color:#0000cc;text-align:center;\">No Information to display..!</h3>";
+                                }
+                                else if ($r = mysqli_fetch_array($sql)) {
+                             ?>
+                            <div class="inbox card-body">
+                                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                            <div class="col-md-6 btn-group-vertical">
+                                <div class="input-group mb-4">
+                                    <div class="col-md-6"><h2> Category</h2></div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control"  placeholder="32 pages" disabled>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Opening Stock </div>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" name="bal32" value="<?php echo htmlspecialchars_decode($r['opn_bal_32'],ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Issuance</div>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" name="issue32" value="<?php echo htmlspecialchars_decode($r['ppt_32'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Damaged</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="dam32" class="form-control" value="<?php echo htmlspecialchars_decode($r['dam_32'],ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Balance</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="stockbal32" class="form-control" value="<?php echo htmlspecialchars_decode($r['stock_bal_32'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Revenue (in USD)</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="ppt_revenue32" class="form-control" value="<?php echo htmlspecialchars_decode($r['ppt_rev_32'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 btn-group-vertical" style="float:right;">
+                                <div class="input-group mb-4">
+                                    <div class="col-md-6"><h2> Category</h2></div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="64 pages" disabled>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Opening Stock </div>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" name="bal64" value="<?php echo htmlspecialchars_decode($r['opn_bal_64'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Issuance</div>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" name="issue64" value="<?php echo htmlspecialchars_decode($r['ppt_64'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Damaged</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="dam64" class="form-control" value="<?php echo htmlspecialchars_decode($r['dam_64'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Balance</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="stockbal64" class="form-control" value="<?php echo htmlspecialchars_decode($r['stock_bal_64'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <div class="col-md-6">Revenue (in USD)</div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="ppt_revenue64" class="form-control" value="<?php echo htmlspecialchars_decode($r['ppt_rev_64'], ENT_QUOTES); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group mt-3">
+                                    <textarea class="form-control" name="message" rows="5" value="<?php echo htmlspecialchars_decode($r['comments'], ENT_QUOTES); ?>"></textarea>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <button type="submit" class="btn btn-lg btn-success mt-1 mb-1">Update</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="submit" value="update">
+                            </form>
+                        </div>
+                      <?php
+                           }
+                      }
+                   ?>
+
+
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow">
@@ -88,7 +204,9 @@ if (!isAdmin()){
                 <div class="card-body">
                     <div class="table-responsive">
                      <?php if (isset($_SESSION['mission'])) {
-                        $sql = mysqli_query($con, "SELECT * FROM tbl_ppt ;");
+                         $misn = $_SESSION['mission'];
+
+                        $sql = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE missionid ='".$misn."';");
                         $c=1;
                         ?>
                          <table id="example" class="table table-striped table-bordered w-100 text-nowrap">
@@ -101,7 +219,7 @@ if (!isAdmin()){
                                 <th class="wd-25p">64p Issuance</th>
                                 <th class="wd-10p">32p Balance</th>
                                 <th class="wd-10p">64p Balance</th>
-                                <th class="wd-5p">view</th>
+                                <th class="wd-5p">manage</th>
                             </thead>
                              <tbody>
                 <?php
@@ -117,7 +235,9 @@ if (!isAdmin()){
                                 <td><?php echo $result['ppt_64']; ?></td>
                                 <td><?php echo $result['stock_bal_32']; ?></td>
                                 <td><?php echo $result['stock_bal_64']; ?></td>
-                                <td class="text-success" align="center"><?php echo "<a title=\"preview " . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" href=\"return-manager.php?preview=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa-2x fa fa-book-open\" /></a>"; ?></td>
+                                <td class="text-success" align="center"><?php echo "<a title=\"preview " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?preview=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa fa-book-open\" /></a>"; ?>
+                                <?php echo "<a title=\"edit " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?edit=" . htmlspecialchars_decode($result['id'], ENT_QUOTES) . "\" ><i class=\"fa fa-edit\" /></a>"; ?>
+                                </td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -139,7 +259,7 @@ if (!isAdmin()){
                 <div class="modal-dialog modal-lg" role="document" tabindex="1">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title" ><?php echo $visa['missionid']; ?> VISA RETURN SUMMARY</h2>
+                            <h2 class="modal-title" ><?php echo $visa['missionid']." ".$visa['month']; ?> VISA RETURN SUMMARY</h2>
                             <button type="button" class="close" aria-label="Close">
                                 <a href="return-manager.php"><span aria-hidden="true">&times;</span></a>
                             </button>
@@ -210,7 +330,9 @@ if (!isAdmin()){
                 <div class="card-body">
                     <div class="table-responsive">
                         <?php
-                        $query = mysqli_query($con, "SELECT * FROM tbl_visa_class ;");
+                        $misin = $_SESSION['mission'];
+
+                        $query = mysqli_query($con, "SELECT * FROM tbl_visa_class WHERE missionid ='".$misin."' ;");
                         $x=1;
                         ?>
                         <table id="example1" class="table table-striped table-bordered w-100 text-nowrap">
@@ -245,7 +367,7 @@ if (!isAdmin()){
                                 <td><?php echo $r['transit']; ?></td>
                                 <td><?php echo $r['official']; ?></td>
                                 <td style><?php echo $r['diplomatic'] + $r['tourist'] + $r['business'] + $r['transit'] + $r['str'] + $r['twp'] + $r['official']; ?></td>
-                                <td class="text-danger" align="center"><?php echo "<a title=\"preview " . htmlspecialchars_decode($r['missionid'], ENT_QUOTES) . "\" href=\"return-manager.php?view=" . htmlspecialchars_decode($r['missionid'], ENT_QUOTES) . "\" ><i class=\"fa-2x fa fa-book-open\" /></a>"; ?></td>
+                                <td class="text-danger" align="center"><?php echo "<a title=\"preview " . htmlspecialchars_decode($r['month'], ENT_QUOTES) . "\" href=\"retmng.php?view=" . htmlspecialchars_decode($r['missionid'], ENT_QUOTES) . "\" ><i class=\"fa-2x fa fa-book-open\" /></a>"; ?></td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -254,76 +376,6 @@ if (!isAdmin()){
                 </div>
             </div>
         </div>
-        <!--<div class="col-lg-12">
-            <div class="card shadow">
-                <div class="card-header bg-gradient-dark">
-                    <h2 class="mb-0 text-white">ETC RETURNS</h2>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered w-100 text-nowrap">
-                            <thead>
-                            <tr>
-                                <th class="wd-10p">YEAR</th>
-                                <th class="wd-15p">Month</th>
-                                <th class="wd-20p">Opening balance</th>
-                                <th class="wd-20p">Total Issuance</th>
-                                <th class="wd-20p">Submitted</th>
-                                <th class="wd-15p">view</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="text-default" align="center"><i class="fa-2x fa fa-book-open"></i></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <!--
-        <div class="col-lg-12">
-            <div class="card shadow ">
-                <div class="card-header bg-gradient-orange">
-                    <h2 class="mb-0 text-white">REVENUE SUMMARY</h2>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered w-100 text-nowrap">
-                            <thead>
-                            <tr>
-                                <th class="wd-10p">YEAR</th>
-                                <th class="wd-10p">Month</th>
-                                <th class="wd-10p">Ppt(32 pages)</th>
-                                <th class="wd-10p">Ppt(64 pages)</th>
-                                <th class="wd-10p">Visa </th>
-                                <th class="wd-10p">Submitted</th>
-                                <th class="wd-10p">view</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="text-orange" align="center"><i class="fa-2x fa fa-book-open"></i></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </div>
 
 <?php include_once 'inc/footer.php';  ?>

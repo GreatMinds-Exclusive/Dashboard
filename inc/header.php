@@ -65,6 +65,9 @@
                                 <li>
 									<a href="visa-entry.php" class="slide-item">Visa Returns</a>
 								</li>
+                                <li>
+									<a href="retmng.php" class="slide-item">Manage Returns</a>
+								</li>
                                
 							</ul>
 						</li>
