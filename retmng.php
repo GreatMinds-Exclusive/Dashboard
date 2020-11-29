@@ -1,17 +1,15 @@
-<?php require_once 'core/init.php';
-        require_once 'core/init2.php';
-
+<?php require_once 'core/init2.php';
 ?>
 
-<?php if (isset($_REQUEST['submit'])) {
-
-    $sql = mysqli_query($con, "update tbl_ppt set opn_bal_32 ='" . htmlspecialchars($_REQUEST['opn_bal_32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['ppt_32'], ENT_QUOTES) . "', dam_32='" . htmlspecialchars($_REQUEST['dam_32'], ENT_QUOTES) . "', stock_bal_32='" . htmlspecialchars($_REQUEST['stock_bal_32'], ENT_QUOTES) . "', ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_rev_32'], ENT_QUOTES) . "', opn_bal_64 ='" . htmlspecialchars($_REQUEST['opn_bal_64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['ppt_64'], ENT_QUOTES) . "', dam_64='" . htmlspecialchars($_REQUEST['dam_64'], ENT_QUOTES) . "', stock_bal_64='" . htmlspecialchars($_REQUEST['stock_bal_64'], ENT_QUOTES) . "', ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_rev_64'], ENT_QUOTES) . "' WHERE id ='" . htmlspecialchars($_REQUEST['id'], ENT_QUOTES) . "'") or die();
-        if (!isset($sql)) {
-            $errors[] = "There was problem updating the entry";
-        } else {
-            $session->message("Return Entry Updated Successfully");
-            header("Location:retmng.php");
-        }
+<?php if (count($_POST) > 0){
+    $sqq = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" .$_SESSION["missionid"] . "' ");
+    $row = mysqli_fetch_array($sqq);
+    if ($_POST['submit']) {
+    $sql = mysqli_query($con, "UPDATE tbl_ppt SET opn_bal_32 ='" . htmlspecialchars($_REQUEST['opn_bal_32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['ppt_32'], ENT_QUOTES) . "', dam_32='" . htmlspecialchars($_REQUEST['dam_32'], ENT_QUOTES) . "', stock_bal_32='" . htmlspecialchars($_REQUEST['stock_bal_32'], ENT_QUOTES) . "', ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_rev_32'], ENT_QUOTES) . "', opn_bal_64 ='" . htmlspecialchars($_REQUEST['opn_bal_64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['ppt_64'], ENT_QUOTES) . "', dam_64='" . htmlspecialchars($_REQUEST['dam_64'], ENT_QUOTES) . "', stock_bal_64='" . htmlspecialchars($_REQUEST['stock_bal_64'], ENT_QUOTES) . "', ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_rev_64'], ENT_QUOTES) . "' WHERE id ='" . htmlspecialchars($_REQUEST['id'], ENT_QUOTES) . "'");
+        $message = "Return Entry Updated Successfully";
+        header("Location:retmng.php");
+    } else
+        $message = "There was problem updating the entry" . mysqli_error($con);
 }
 ?>
     <?php require_once 'inc/header.php'; ?>
@@ -23,7 +21,7 @@
 									<li class="breadcrumb-item active" aria-current="page">Manage Returns</li>
 								</ol>
 							</div>
-                            <?php success($message); error($errors); ?>
+                            <h2><?php if (isset($message)) { echo $message; } ?></h2>
                             <?php if (isset($_REQUEST['preview'])) {
                                 $sqlquery = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE missionid='" . htmlspecialchars($_REQUEST['preview'], ENT_QUOTES) . "' ");
 
@@ -99,8 +97,11 @@
                                 }
                                 else if ($r = mysqli_fetch_array($sql)) {
                              ?>
+
+                         <div class="card shadow">
+                        <div class="card-body">
                             <div class="inbox card-body">
-                                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                                <form name="retmng" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                             <div class="col-md-6 btn-group-vertical">
                                 <div class="input-group mb-4">
                                     <div class="col-md-6"><h2> Category</h2></div>
@@ -184,10 +185,12 @@
                                 <div class="form-group mb-0">
                                     <button type="submit" class="btn btn-lg btn-success mt-1 mb-1">Update</button>
                                 </div>
+                                <input type="hidden" name="submit" value="submit">
                             </div>
-                            <input type="hidden" name="submit" value="update">
                             </form>
                         </div>
+                        </div>
+                         </div>
                       <?php
                            }
                       }
@@ -235,8 +238,9 @@
                                 <td><?php echo $result['ppt_64']; ?></td>
                                 <td><?php echo $result['stock_bal_32']; ?></td>
                                 <td><?php echo $result['stock_bal_64']; ?></td>
-                                <td class="text-success" align="center"><?php echo "<a title=\"preview " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?preview=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa fa-book-open\" /></a>"; ?>
-                                <?php echo "<a title=\"edit " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?edit=" . htmlspecialchars_decode($result['id'], ENT_QUOTES) . "\" ><i class=\"fa fa-edit\" /></a>"; ?>
+                                <td class="text-success" align="center">
+                                <?php echo "<a title=\"preview " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?preview=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-book-open\" /></i></a>"; ?>
+                                <?php echo "<a title=\"edit " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?edit=" . htmlspecialchars_decode($result['id'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-user-edit\" /></i></a>"; ?>
                                 </td>
                             </tr>
                             <?php } ?>

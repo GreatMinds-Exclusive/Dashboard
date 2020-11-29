@@ -105,7 +105,7 @@
 									<a href="application-request.php" class="slide-item">New Application</a>
 								</li>
                                 <li>
-									<a href="approvals.php" class="slide-item">Requests</a>
+									<a href="#" class="slide-item">Requests</a>
 								</li>
 							</ul>
 						</li>
@@ -191,7 +191,7 @@
 												<h6 class="text-overflow m-0">Logged in!</h6>
 											</div>
                                             <?php if ($_SESSION['us3rgr0up'] == 118): ?>
-											<a class="dropdown-item" href="manage.php"><i class="ni ni-single-02"></i> <span>Profile</span></a>
+											<a class="dropdown-item" href="manage-all.php"><i class="ni ni-single-02"></i> <span>Profile</span></a>
 											<?php endif; ?>
 											<a class="dropdown-item" href="logout.php"><i class="ni ni-user-run"></i> <span>Logout</span></a>
                                             <?php else: ?>

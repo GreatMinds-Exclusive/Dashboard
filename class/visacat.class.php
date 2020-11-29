@@ -57,7 +57,7 @@ class Visacat {
 		return !empty($result['count']) ? $result['count'] : false;
 	}
     public function getVisaReturn($missionid) {
-        $statement = $this->database->prepare("SELECT * FROM tbl_visa_class WHERE missionid = :mission ORDER BY month DESC");
+        $statement = $this->database->prepare("SELECT `month`, `yearid`,`missionid` FROM tbl_visa_class WHERE missionid = :mission ORDER BY month DESC");
         $statement->execute(array("mission"=>$missionid));
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 

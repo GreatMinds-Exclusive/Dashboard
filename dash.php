@@ -65,7 +65,7 @@
 										<div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 stats">
 											<div class="text-center">
 												<p class="text-light">
-												  <i class="fas fa-time"></i>
+												  <i class="fas fa-clock"></i>
 												 Month in View
 												</p>
 												<h2 class="text-success text-xl"><?php $timestamp = time(); echo(date("F Y", $timestamp)) ?> </h2>
@@ -90,11 +90,13 @@
                                                 <tr><th></th><th>MONTH</th><th>STATUS</th></tr>
                                                 <tbody>
                                                 <?php $c=1; foreach($return as $r): ?>
-                                                <tr>
+
+                                                    <tr>
                                                     <td><?php echo $c; ?></td>
                                                     <td><h2><?php echo $r['month']."  ". $r['year']; ?></h2></td>
-                                                <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"#\">Completed</a>"; ?></td>
-                                                </tr>
+                                                    <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"retmng.php\">Completed</a>"; ?></td>
+                                                    </tr>
+                                                <tr>
                                                 <?php $c++; endforeach; ?>
                                                 </tbody>
                                             </table>
@@ -120,7 +122,7 @@
                                                             <tr>
                                                                 <td><?php echo $x; ?></td>
                                                                 <td><h2><?php echo $v['month']."  ". $v['yearid']; ?></h2></td>
-                                                                <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"#\">Completed</a>"; ?></td>
+                                                                <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"retmng.php\">Completed</a>"; ?></td>
                                                             </tr>
                                                             <?php $x++; endforeach; ?>
                                                         </tbody>

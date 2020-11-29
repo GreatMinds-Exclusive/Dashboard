@@ -3,6 +3,7 @@
 //ini_set('display_startup_errors', 1);
 error_reporting(1);
 session_start();
+ob_start();
 if(!(isset($_SESSION["profile"]))) {
     $error[] = "Session Timeout. Please reauthenticate to continue";
     header("Location:logout.php?session_expired=1");

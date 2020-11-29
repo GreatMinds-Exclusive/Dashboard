@@ -112,7 +112,7 @@ include_once 'config_2.php';
         			</div>
         			<p></p>
         			<div class="modal-body">
-        				<form action="index.php" method="post" onsubmit="return validateForm()">
+        				<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" onsubmit="return validateForm()">
 
 						<div class="form-group">
                             <div class="col-md-2" ><label class="form-label">UserName</label></div>

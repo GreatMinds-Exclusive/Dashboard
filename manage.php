@@ -18,6 +18,9 @@
                                         <div class="card-header">
                                             <h2 class="mb-0">Staff Record</h2>
                                         </div>
+                                        <div class="pull-right">
+                                            <a href="pscdxhng.php" class="btn btn-sm btn-success">Change Password</a>
+                                        </div>
                                         <div class="card-body">
                                             <?php $users = $profile->getProfile($_SESSION['profile']);
                                               if (isset($profile)):

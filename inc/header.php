@@ -106,10 +106,10 @@
 								</li>
 								<!--<li>
 									<a href="#" class="slide-item">Manage Request</a>
-								</li>
+								</li>-->
 							</ul>
 						</li>
-                        <li class="slide">
+                        <!--<li class="slide">
 							<a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon fe fe-map"></i><span class="side-menu__label">Archive</span><i class="angle fa fa-angle-right"></i></a>
 							<ul class="slide-menu">
 								<li>
@@ -218,6 +218,7 @@
                                             <?php if ($_SESSION['profile'] == 118): ?>
 											<a class="dropdown-item" href="#"><i class="ni ni-single-02"></i> <span>Settings</span></a>
 											<?php endif; ?>
+											<a class="dropdown-item" href="manage.php"><i class="fa fa-user"></i> <span>Profile</span></a>
 											<a class="dropdown-item" href="logout.php"><i class="ni ni-user-run"></i> <span>Logout</span></a>
                                             <?php else: ?>
 											<a class="dropdown-item" href="index.php"><i class="ni ni-lock-circle-open"></i> <span>Login</span></a>
