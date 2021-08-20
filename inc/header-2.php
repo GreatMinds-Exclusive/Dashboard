@@ -71,6 +71,9 @@
                                 <li>
 									<a href="report.php" class="slide-item">Generate Returns</a>
 								</li>
+                                <li>
+									<a href="annual-report.php" class="slide-item">Annual Returns</a>
+								</li>
 
 							</ul>
 						</li>

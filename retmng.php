@@ -1,16 +1,38 @@
-<?php require_once 'core/init2.php';
+<?php require_once 'core/init.php';
+    require_once 'core/init2.php';
 ?>
 
-<?php if (count($_POST) > 0){
-    $sqq = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" .$_SESSION["missionid"] . "' ");
-    $row = mysqli_fetch_array($sqq);
-    if ($_POST['submit']) {
-    $sql = mysqli_query($con, "UPDATE tbl_ppt SET opn_bal_32 ='" . htmlspecialchars($_REQUEST['opn_bal_32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['ppt_32'], ENT_QUOTES) . "', dam_32='" . htmlspecialchars($_REQUEST['dam_32'], ENT_QUOTES) . "', stock_bal_32='" . htmlspecialchars($_REQUEST['stock_bal_32'], ENT_QUOTES) . "', ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_rev_32'], ENT_QUOTES) . "', opn_bal_64 ='" . htmlspecialchars($_REQUEST['opn_bal_64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['ppt_64'], ENT_QUOTES) . "', dam_64='" . htmlspecialchars($_REQUEST['dam_64'], ENT_QUOTES) . "', stock_bal_64='" . htmlspecialchars($_REQUEST['stock_bal_64'], ENT_QUOTES) . "', ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_rev_64'], ENT_QUOTES) . "' WHERE id ='" . htmlspecialchars($_REQUEST['id'], ENT_QUOTES) . "'");
-        $message = "Return Entry Updated Successfully";
-        header("Location:retmng.php");
-    } else
-        $message = "There was problem updating the entry" . mysqli_error($con);
+<?php if (isset($_REQUEST['delete'])) {
+    unset ($_REQUEST['delete']);
+    $hasvar = false;
+    foreach ($_REQUEST as $variable) {
+        if (is_numeric($variable)) {
+            $hasvar = true;
+
+            if (!("delete from tbl_ppt where id = '".$variable."'")) {
+                if (mysqli_errno() == 1451)
+                    $errors[] = "To Prevent accidental delete, system will not allow propagated deleting.<br/><b>Help:</b> If you still want to delete this record, select the record again.";
+                else
+                    $errors[] = mysqli_errno();
+            }
+        }
+    }
+    if (!isset($errors) && $hasvar == true) {
+        $session->message("Selected Record/s are successfully Deleted");
+        header('Location:retmng.php');
+        } else if (!$hasvar) {
+        $errors[] = "First Select the records to be Deleted.";
+    }
 }
+    else if (isset($_REQUEST['submit'])) {
+        if (empty($_REQUEST['bal32']) || empty($_REQUEST['bal64'])) {
+            $errors[] = "Some of the required Fields are Empty.Therefore Nothing is Updated";
+        } else {
+            $query = "update tbl_ppt set opn_bal_32='" . htmlspecialchars($_REQUEST['bal32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['issue32'], ENT_QUOTES) . "',dam_32='" . htmlspecialchars($_REQUEST['dam32'], ENT_QUOTES) . "',stock_bal_32='" . htmlspecialchars($_REQUEST['stockbal32'], ENT_QUOTES) . "',ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_revenue32'], ENT_QUOTES) . "', opn_bal_64='" . htmlspecialchars($_REQUEST['bal64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['issue64'], ENT_QUOTES) . "',dam_64='" . htmlspecialchars($_REQUEST['dam64'], ENT_QUOTES) . "',stock_bal_64='" . htmlspecialchars($_REQUEST['stockbal64'], ENT_QUOTES) . "',ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_revenue64'], ENT_QUOTES) . "' where id='" . htmlspecialchars($_REQUEST['tbl_ppt'], ENT_QUOTES) . "';";
+            if (isset($query));
+                $session->message("User Information is Successfully Updated.");
+        }
+    }
 ?>
     <?php require_once 'inc/header.php'; ?>
 <!-- Page content -->
@@ -21,9 +43,9 @@
 									<li class="breadcrumb-item active" aria-current="page">Manage Returns</li>
 								</ol>
 							</div>
-                            <h2><?php if (isset($message)) { echo $message; } ?></h2>
+                            <h2><?php error($errors); success($message); ?></h2>
                             <?php if (isset($_REQUEST['preview'])) {
-                                $sqlquery = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE missionid='" . htmlspecialchars($_REQUEST['preview'], ENT_QUOTES) . "' ");
+                                $sqlquery = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" . htmlspecialchars($_REQUEST['preview'], ENT_QUOTES) . "' ");
 
                                 if(mysqli_num_rows($sqlquery) == 0) {
                                     echo "<h3 style=\"color:#0000cc;text-align:center;\">No Information to display..!</h3>";
@@ -210,10 +232,11 @@
                          $misn = $_SESSION['mission'];
 
                         $sql = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE missionid ='".$misn."';");
-                        $c=1;
+                        $i=1;
                         ?>
                          <table id="example" class="table table-striped table-bordered w-100 text-nowrap">
                             <thead>
+                                <th></th>
                                 <th class="wd-5p">mission</th>
                                 <th class="wd-10p">DATE</th>
                                 <th class="wd-25p">32p Opening</th>
@@ -228,8 +251,14 @@
                 <?php
                 while ($result = mysqli_fetch_array($sql))
                 {
-               ?>
-                            <tr>
+                    $i = $i + 1;
+                    if ($i % 2 == 0) {
+                        echo "<tr class=\"alt\">";
+                    } else {
+                        echo "<tr>";
+                    }
+                    ?>
+                                <td><?php echo "<input type=\"checkbox\" name=\"d$i\" value=\"" . $result['id'] . "\">"; ?></td>
                                 <td><?php echo $result['missionid']; ?></td>
                                 <td><?php echo $result['month']." ".$result['year']; ?></td>
                                 <td><?php echo $result['opn_bal_32']; ?></td>
@@ -239,11 +268,14 @@
                                 <td><?php echo $result['stock_bal_32']; ?></td>
                                 <td><?php echo $result['stock_bal_64']; ?></td>
                                 <td class="text-success" align="center">
-                                <?php echo "<a title=\"preview " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?preview=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-book-open\" /></i></a>"; ?>
+                                <?php echo "<a title=\"preview " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?preview=" . htmlspecialchars_decode($result['id'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-book\" /></i></a>"; ?>
                                 <?php echo "<a title=\"edit " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?edit=" . htmlspecialchars_decode($result['id'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-user-edit\" /></i></a>"; ?>
+                                <?php echo "<a title=\"delete " . htmlspecialchars_decode($result['month'], ENT_QUOTES) . "\" href=\"retmng.php?delete=" . htmlspecialchars_decode($result['missionid'], ENT_QUOTES) . "\" ><i class=\"fa fa-2x fa-trash\" /></i></a>"; ?>
                                 </td>
                             </tr>
-                            <?php } ?>
+                            <?php
+                            }
+                        ?>
                             </tbody>
                         </table>
                     </div>

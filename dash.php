@@ -1,4 +1,5 @@
-<?php require_once 'core/init.php';  ?>
+<?php require_once 'core/init.php';
+    restricted()  ?>
 
 <?php include 'inc/header.php'; ?>
         <!-- Page content -->

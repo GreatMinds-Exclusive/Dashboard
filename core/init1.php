@@ -1,16 +1,8 @@
 <?php
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+
 error_reporting(1);
-
 session_start();
-ob_start();
-if(!(isset($_SESSION["profile"]))) {
-    header("Location:logout.php?session_expired=1");
-    $errors[] = "Session Timeout. Please reauthenticate to continue";
-} else{
-
-}
 
 // Create and initialize variables
 $errors = array();

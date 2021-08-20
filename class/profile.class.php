@@ -1,7 +1,7 @@
 <?php
 class Profile {
 	private $database;
-	public $id, $nisno, $firstname, $middlename, $lastname, $gender, $rank, $email, $phone1, $address, $city, $state, $country, $mission, $phone2, $dofa, $dopa, $posted, $dob, $image, $continent;
+	public $id, $nisno, $firstname, $middlename, $lastname, $gender, $rank, $email, $phone1, $address, $city, $state, $country, $mission, $phone2, $dofa, $dopa, $posted, $dob;
 
 	public function __construct() {
 		$this->database = new Connection();
@@ -10,7 +10,7 @@ class Profile {
 
 	// Create record in database table
 	public function createProfile() {
-		$statement = $this->database->prepare("INSERT INTO profile (nisno, firstname, middlename, lastname, gender, rank, email, phone1, address, city, state, country, mission, phone2, dofa, dopa, posted, dob, image, continent) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$statement = $this->database->prepare("INSERT INTO profile (nisno, firstname, middlename, lastname, gender, rank, email, phone1, address, city, state, country, mission, phone2, dofa, dopa, posted, dob) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		// Bind all values to the placeholders
 		$statement->bindParam(1, $this->nisno);
 		$statement->bindParam(2, $this->firstname);
@@ -30,8 +30,6 @@ class Profile {
         $statement->bindParam(16, $this->dopa);
         $statement->bindParam(17, $this->posted);
         $statement->bindParam(18, $this->dob);
-        $statement->bindParam(19, $this->image);
-        $statement->bindParam(20, $this->continent);
 
 		// Execute the query
 		$result = $statement->execute();
@@ -41,6 +39,30 @@ class Profile {
 
 		return $result ? true : false;
 	}
+	public function updateProfile() {
+	    $statement = $this->database->prepare("UPDATE `profile` SET `nisno`= :nisno,`firstname`= :firstname,`middlename`= :middlename,`lastname`= :lastname,`gender`= :gender,`rank`= :rank,`email`= :email,`phone1`= :phone1,`address`= :address,`city`= :city,`state`= :state,`country`= :countryid,`mission`= :missionid,`phone2`= :phone2,`dofa`= :dofa,`dopa`= :dopa,`posted`= :posted,`dob`= dob WHERE id = :id");
+
+	    $statement->bindParam(':nisno', $nisno, PDO::PARAM_STR);
+	    $statement->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+	    $statement->bindParam(':middlename', $middlename, PDO::PARAM_STR);
+	    $statement->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+	    $statement->bindParam(':gender', $gender, PDO::PARAM_STR);
+	    $statement->bindParam(':rank', $rank, PDO::PARAM_STR);
+	    $statement->bindParam(':email', $email, PDO::PARAM_STR);
+	    $statement->bindParam(':phone1', $phone1, PDO::PARAM_STR);
+	    $statement->bindParam(':address', $address, PDO::PARAM_STR);
+	    $statement->bindParam(':city', $city, PDO::PARAM_STR);
+        $statement->bindParam(':state', $state, PDO::PARAM_STR);
+        $statement->bindParam(':countryid', $country, PDO::PARAM_STR);
+        $statement->bindParam(':missionid', $mission, PDO::PARAM_STR);
+        $statement->bindParam(':phone2', $phone2, PDO::PARAM_STR);
+	    $statement->bindParam(':dofa', $dofa, PDO::PARAM_STR);
+	    $statement->bindParam(':dopa', $dopa, PDO::PARAM_STR);
+	    $statement->bindParam(':posted', $posted, PDO::PARAM_STR);
+	    $statement->bindParam(':dob', $dob, PDO::PARAM_STR);
+
+	    $statement->execute();
+    }
 
 	// Read row(s) from the database table
     public function getProfile($id) {

@@ -18,9 +18,6 @@
                                         <div class="card-header">
                                             <h2 class="mb-0">Staff Record</h2>
                                         </div>
-                                        <div class="pull-right">
-                                            <a href="pscdxhng.php" class="btn btn-sm btn-success">Change Password</a>
-                                        </div>
                                         <div class="card-body">
                                             <?php $users = $profile->getProfile($_SESSION['profile']);
                                               if (isset($profile)):
@@ -37,7 +34,7 @@
                          <td><?php echo $users['phone1']; ?></td>
                          <td><?php echo $users['email']; ?></td>
                          <td><?php echo $users['mission']; ?></td>
-                         <td><?php echo "<a class=\"btn btn-primary btn-sm\" title=\"preview " . htmlspecialchars_decode($users['firstname'], ENT_QUOTES) . "\"href=\"manage.php?preview=" . htmlspecialchars_decode($users['firstname'], ENT_QUOTES) . "\"><i class=\"side-menu__icon fe fe-eye\"></i> Manage</a>"; ?>
+                         <td><?php echo "<a class=\"btn btn-primary btn-sm\" title=\"preview " . htmlspecialchars_decode($users['firstname'], ENT_QUOTES) . "\"href=\"manage.php?preview=" . htmlspecialchars_decode($users['firstname'], ENT_QUOTES) . "\">View / Manage</a>"; ?> <a href="pscdxhng.php" class="btn btn-success btn-sm"> Change Password</a>
                          </td>
                            <!-- <a class="btn btn-success btn-sm" href="#"><i class="side-menu__icon fe fe-edit"></i> &nbsp;Edit </a> -->
                        </tr>

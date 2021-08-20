@@ -1,22 +1,7 @@
-<?php require_once 'core/init.php';
-admin();
-if (!isAdmin()){
-    redirectTo ('dash.php');
-}
-?>
+<?php require_once 'core/init1.php'; ?>
 
-<?php include_once 'inc/header-2.php'; ?>
-                <div class="container-fluid pt-8">
-							<div class="page-header mt-0 shadow p-3">
-								<ol class="breadcrumb mb-sm-0">
-									<li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">NEW STAFF ENTRY</li>
-								</ol>
-							</div>
 
-        <div class="row">
-          	<div class="col-md-12">
-                <?php if (isset($_POST['register'])) {
+    <?php if (isset($_POST['register'])) {
 	  $required = array('dob', 'email', 'password', 'firstname', 'lastname', 'rank', 'phone1', 'nisno', 'posted');
 
 	  foreach($_POST as $key=>$value) {
@@ -43,7 +28,7 @@ if (!isAdmin()){
         $profile->phone2 = sanitize('phone2');
 	    $profile->address = sanitize('address');
 	    $profile->city = sanitize('city');
-        $profile->stateid = sanitize('stateid');
+        $profile->state = sanitize('state');
 	    $profile->mission = sanitize('missionid');
 	    $profile->country = sanitize('countryid');
         $profile->dob = sanitize('dob');
@@ -53,9 +38,7 @@ if (!isAdmin()){
         $profile->dopa = sanitize('dopa');
         $profile->posted = sanitize('posted');
 
-        $image_file = $_FILES['']
-
-	    // Check for more errorss
+	    // Check for more errors
 	    if (!filter_var($profile->email, FILTER_VALIDATE_EMAIL)) {
 	      $errors[] = "Email is invalid.";
 	    }
@@ -80,24 +63,38 @@ if (!isAdmin()){
 	        // Get the profileid from Profile class
 	        $user->profileid = $profile->id;
 
+	        // Get values from profile to user table
+              $user->mission = $profile->mission;
+              $user->country = $profile->country;
+
 	        // Hash the password with MD5 hash algorithm
 	        $user->password = md5($user->password);
 
 	        if ($user->createUser()) {
 	          $session->message("Attache Profile created successfully.");
-	          header("Location: register.php");
+	          redirectTo('index.php');
 	        }
 	      }
 	    }
 	  }
 	}
 ?>
-                [
-                <h2>STAFF INFORMATION</h2>
-                <form action="register.php" enctype="multipart/form-data" method="post">
+
+<?php include_once 'inc/head.php'; ?>
+    <div class="container-fluid pt-8">
+        <div class="page-header mt-0 shadow p-3">
+            <ol class="breadcrumb mb-sm-0">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">NEW STAFF ENTRY</li>
+            </ol>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+         <h2>STAFF INFORMATION</h2>
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 						<div class="card shadow">
-                            <?php error($errors); 
-                            success($message); ?>
+                            <?php error($errors); ?>
 										<div class="card-body">
 											<div class="row">
 												<div class="col-md-6">
@@ -127,7 +124,7 @@ if (!isAdmin()){
                                     </div>
                                 <div class="form-group">
                                 <label class="form-label">Phone 1</label>
-                         <input type="number" name="phone1" placeholder="Whatsapp Line" class="form-control" value="<?php echo stickyForm('phone1'); ?>" required maxlength="14" /></div>
+                         <input type="number" name="phone1" placeholder="Whatsapp Line" class="form-control" value="<?php echo stickyForm('phone1'); ?>" required maxlength="14" required/></div>
                                 <div class="form-group">
                                 <label class="form-label">Phone 2</label>
                          <input type="number" name="phone2" placeholder="Alternate Line" class="form-control" value="<?php echo stickyForm('phone2'); ?>" maxlength="14" /></div>
@@ -141,17 +138,17 @@ if (!isAdmin()){
 													</div>
                                 <div class="form-group">
                                 <label class="form-label">City</label>
-                         <input type="text" name="city" placeholder="City" class="form-control" value="<?php echo stickyForm('city'); ?>" />
+                         <input type="text" name="city" placeholder="City" class="form-control" value="<?php echo stickyForm('city'); ?>" required/>
                       </div>
                       <div class="form-group">
                           <label class="form-label">State of Origin</label>
-	                       <select class="form-control state" name="stateid" value="<?php echo stickyForm('state'); ?>">
+	                       <select class="form-control state" name="state" value="<?php echo stickyForm('state'); ?>" required>
 		                      <option value="">-- Choose State --</option>
 		                      <?php
 		                          $states = $state->getStates();
                                     foreach($states as $state) {
-		                              echo "<option value='".$state['id']."'";
-		                              echo stickySelect('stateid', $state['id']);
+		                              echo "<option value='".$state['statename']."'";
+		                              echo stickySelect('statename', $state['statename']);
 		                              echo ">".$state['statename']."</option>";
 	                               }
 		                      ?>
@@ -173,39 +170,31 @@ if (!isAdmin()){
 								<label class="form-label">Present Rank</label>
 									<select class="form-control rank" name="rank" value="<?php echo stickyForm('rank'); ?>" required>
 										<option value="">--Select rank--</option>
-										<option>CGIS</option>
-										<option>DCG</option>
-										<option>ACG</option>
-										<option>CIS</option>
-										<option>DCI</option>
-										<option>ACI</option>
+                                        <option>CIS</option>
+                                        <option>DCI</option>
+                                        <option>ACI</option>
                                         <option>CSI</option>
                                         <option>SI</option>
                                         <option>DSI</option>
                                         <option>ASI1</option>
-										<option>ASI2</option>
+                                        <option>ASI2</option>
                                         <option>CII(TECH)</option>
                                         <option>CII</option>
                                         <option>DCII</option>
                                         <option>ACII</option>
-										<option>PII</option>
-										<option>SII</option>
-										<option>II</option>
-										<option>AII</option>
-										<option>CIA</option>
-                                        <option>SIA</option>
-                                        <option>IA1</option>
-                                        <option>IA2</option>
-                                        <option>IA3</option>
+                                        <option>PII</option>
+                                        <option>SII</option>
+                                        <option>II</option>
+                                        <option>AII</option>
 									</select>
 				            </div>
                         <div class="form-group">
                            <label class="form-label">Date of First Appointment</label>
-                            <input type="date" name="dofa" placeholder="" class="form-control" value="<?php echo stickyForm('dofa'); ?>" />
+                            <input type="date" name="dofa" placeholder="" class="form-control" value="<?php echo stickyForm('dofa'); ?>" required/>
                         </div>
                         <div class="form-group">
                            <label class="form-label">Date of Present Appointment</label>
-                            <input type="date" name="dopa" placeholder="" class="form-control" value="<?php echo stickyForm('dopa'); ?>" />
+                            <input type="date" name="dopa" placeholder="" class="form-control" value="<?php echo stickyForm('dopa'); ?>" required/>
                         </div>
                         <div class="form-group">
                            <label class="form-label">Date Posted to Mission</label>
@@ -213,48 +202,46 @@ if (!isAdmin()){
                         </div>
                         <div class="form-group">
                             <label class="form-label">Country of Posting</label>
-	                           <select class="form-control country" name="countryid" value="<?php echo stickyForm('countryid'); ?>" required>
+	                           <select class="form-control country" name="countryid" value="<?php echo stickyForm('countryid'); ?>" required />
 		                          <option value="">-- Choose Country --</option>
-		                              <?php
-		                                  $country = $country->getCountry();
-                                          foreach($country as $country) {
-		                                      echo "<option value='".$country['id']."'";
-		                                      echo stickySelect('countryid', $country['id']);
-		                                      echo ">".$country['country']."</option>";
-	                                       }
-		                              ?>
+                                   <?php
+                                   $countries = $country->getCountry();
+                                   foreach($countries as $ctry) {
+                                       echo "<option value='".$ctry['country']."'";
+                                       echo stickySelect('mission', $ctry['country']);
+                                       echo ">".$ctry['country']."</option>";
+                                   }
+                                   ?>
 	                           </select>
                         </div>
                      						<div class="form-group">
                                                 <label class="form-label">Mission</label>
-												<select class="form-control mission" name="missionid" value="<?php echo stickyForm('missionid'); ?>" required>
+												<select class="form-control mission" name="missionid" value="<?php echo stickyForm('missionid'); ?>" required />
 													<option value="">-- Choose Mission --</option>
-													<?php
-														if (isset($_POST['missionid'])) {
-															$mission->getMissionById($_POST['missionid']);
-															echo "<option value='".$mission->mission."' selected='selected'>".$mission->mission."</option>";
-														}
-													?>
-												</select>
-											</div>                                            
-                                            <div class="form-group">
-												<div class="form-label">Passport Photo (format jpg/jpeg/png) </div>
-												<input type="file" name="image" />
+                                                    <?php
+                                                    $missions = $mission->getMissions();
+                                                    foreach($missions as $msn) {
+                                                        echo "<option value='".$msn['mission']."'";
+                                                        echo stickySelect('mission', $msn['mission']);
+                                                        echo ">".$msn['mission']."</option>";
+                                                    }
+                                                    ?>
+                                                </select>
 											</div>
                                         </div>			
                     
                     <div class="col-md-12">
 						<legend><i class="fa fa-lock"></i> User Account</legend>
 						<div class="form-group">
-                         <input type="text" name="username" placeholder="Username" class="form-control" value="<?php echo stickyForm ('username'); ?>" />
+                         <input type="text" name="username" placeholder="Username" class="form-control" value="<?php echo stickyForm ('username'); ?>" required/>
                             </div>
 
 						<div class="form-group">
-                         <input type="password" name="password" placeholder="Password" class="form-control" />
+                         <input type="password" name="password" placeholder="Password" class="form-control" required/>
                         </div>
 
 						<div class="form-group">
-                         <input type="password" name="confirm" placeholder="Confirm Password" class="form-control" />
+                         <input type="password" name="confirm" placeholder="Confirm Password" class="form-control" required />
                       </div>
 				        <hr />
                         <div class="col-md-12" align="center">
@@ -266,14 +253,12 @@ if (!isAdmin()){
                         </div>
                      <input type="hidden" name="register" value="registeruser">
                 	</form>
-                </div>
+                    </div>
                 </div>
 		      </div>
             </div>
-            </div>
-
+        </div>
     </div>
-                    </div>
-            
-        
-<?php include_once 'inc/footer.php'; ?>
+</div>
+
+<?php include_once 'inc/foot.php'; ?>

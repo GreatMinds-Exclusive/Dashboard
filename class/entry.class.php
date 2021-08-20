@@ -11,7 +11,7 @@ class Entry {
 	
 	// Create record in database table
 	public function createEntry() {
-		$statement = $this->database->prepare("INSERT ON DUPLICATE KEY UPDATE INTO tbl_ppt (month, year, ppt_32, ppt_64, dam_32, dam_64, opn_bal_32, opn_bal_64, stock_bal_32, stock_bal_64, ppt_rev_32, ppt_rev_64, comments, missionid, userid, countryid, continent_id ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		$statement = $this->database->prepare("INSERT INTO tbl_ppt (month, year, ppt_32, ppt_64, dam_32, dam_64, opn_bal_32, opn_bal_64, stock_bal_32, stock_bal_64, ppt_rev_32, ppt_rev_64, comments, missionid, userid, countryid, continent_id ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		// Bind all values to the placeholders
 		$statement->bindParam(1, $this->month);
 		$statement->bindParam(2, $this->year);
@@ -63,6 +63,7 @@ class Entry {
 
 	    return $result ? $result : false;
     }
+
     public function getReturnbyMonth($missionid) {
         $statement = $this->database->prepare("SELECT DISTINCT `month`,`year`,`missionid` FROM tbl_ppt WHERE missionid = :mission ORDER BY date");
         $statement->execute(array("mission"=>$missionid));

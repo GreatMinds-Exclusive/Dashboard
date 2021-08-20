@@ -80,12 +80,19 @@ include_once 'config_2.php';
         <div class="container">
             <!-- Codrops top bar -->
             <div class="codrops-top">
-                <a href="#" class="launch-modal" data-modal-id="modal-search">
-                    <strong></strong></a>
+                <?php error($errors); success($message); ?>
+                <!--
+                <a href="#" class="launch-modal" data-modal-id="modal-admin">
+                    <strong>ADMIN LOGIN</strong></a>
+                -->
 
-                <span class="right">
                     <a class="launch-modal" href="#" data-modal-id="modal-login">
                         <strong>&laquo;staff login</strong>
+                    </a>
+
+                <span class="right">
+                    <a href="register.php">
+                        <strong> ATTACHE REGISTRATION &raquo; </strong>
                     </a>
                 </span>
                 <div class="clr"></div>
@@ -94,7 +101,6 @@ include_once 'config_2.php';
             <header>
                 <h1>NIS<span> DIPLOMATIC MISSIONS </span>PORTAL</h1>
                 <h2>Automation & Integration of Foreign Missions</h2>
-                <p><?php error($errors); ?></p>
             </header>
         </div>
         
@@ -108,7 +114,6 @@ include_once 'config_2.php';
         					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
         				</button>
                         <div align="center" id="modal-login-label"><h3>Sign in with Credentials</h3></div>
-                        <?php error($errors); ?>
         			</div>
         			<p></p>
         			<div class="modal-body">
@@ -134,9 +139,6 @@ include_once 'config_2.php';
                         <input type="hidden" name="loginuser" value="loginuser" />
                        </div>
                     </form>
-                        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-                                async defer>
-                        </script>
                     </div>
         		</div>
         	</div>
@@ -166,7 +168,51 @@ include_once 'config_2.php';
         </div>
         </div>
         -->
+        <div class="modal fade" id="modal-admin" tabindex="2" role="dialog" aria-labelledby="modal-admin-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <div align="center" id="modal-admin-label"><h3>Authentication</h3></div>
+                        <?php error($errors); ?>
+                    </div>
+                    <p></p>
+                    <div class="modal-body">
+                        <form action="login.php" method="post" onsubmit="return validateForm()">
+
+                            <div class="form-group">
+                                <div class="col-md-2" ><label class="form-label">User</label></div>
+                                <div class="col-md-10">
+                                    <select name="username" class="form-control" required>
+                                        <option value="">Select Admin</option>
+                                        <option>CGIS</option>
+                                        <option>Passport & OTD</option>
+                                        <option>Visa & Residency</option>
+                                        <option>Foreign Desk</option>
+                                    </select>
+                                </div></div>
+                            &nbsp;
+                            <div class="form-group">
+                                <div class="col-md-2"><label class="form-label">Password</label></div>
+                                <div class="col-md-10">
+                                    <input type="password" name="password" placeholder="" class="form-control" required />
+                                </div></div>
+                            &nbsp;
+                            <div id="html_element"></div>
+                            <div class="col-md-offset-5">
+                                <button type="submit" class="btn-lg btn-default">
+                                    <i class="fa fa-lock"></i> Login
+                                </button>
+                                <input type="hidden" name="admlogin" value="login" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
