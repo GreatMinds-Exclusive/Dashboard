@@ -40,6 +40,7 @@ class Visacat {
 		return $result ? true : false;
 	}
 
+
 	// Read row(s) from the database table
 	public function getVisa() {
 		$statement = $this->database->prepare("SELECT * FROM tbl_visa_class");

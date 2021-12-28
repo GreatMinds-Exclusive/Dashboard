@@ -95,7 +95,7 @@
                                                     <tr>
                                                     <td><?php echo $c; ?></td>
                                                     <td><h2><?php echo $r['month']."  ". $r['year']; ?></h2></td>
-                                                    <td><?php echo ">Completed</a>"; ?></td>
+                                                        <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"retmng.php\">Completed</a>"; ?></td>
                                                     </tr>
                                                 <tr>
                                                 <?php $c++; endforeach; ?>
@@ -123,7 +123,7 @@
                                                             <tr>
                                                                 <td><?php echo $x; ?></td>
                                                                 <td><h2><?php echo $v['month']."  ". $v['yearid']; ?></h2></td>
-                                                                <td><?php echo ">Completed</a>"; ?></td>
+                                                                <td><?php echo "<a class=\"btn btn-success btn-md\" href=\"retmng.php\">Completed</a>"; ?></td>
                                                             </tr>
                                                             <?php $x++; endforeach; ?>
                                                         </tbody>

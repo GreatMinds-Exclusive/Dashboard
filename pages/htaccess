@@ -1,21 +1,13 @@
 <IfModule mod_rewrite.c>
 Options Indexes FollowSymLinks
 
-#RewriteEngine On
-
-#RewriteRule ^(.*)$ /pages/$1 [L]
-
 RewriteEngine On
+
 RewriteBase /pages/
-#RewriteRule ^$ /pages [L]
 
-RedirectMatch ^/$ /pages/
-
-
-#RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteCond %{REQUEST_FILENAME} !-d
-#RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
-
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
 #RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteRule ^(?!pages/)(.+)$ /index.php?u=$1 [NC,QSA,L]
 

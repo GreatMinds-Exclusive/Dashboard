@@ -1,40 +1,6 @@
 <?php require_once 'core/init.php';
-    require_once 'core/init2.php';
-?>
-
-<?php if (isset($_REQUEST['delete'])) {
-    unset ($_REQUEST['delete']);
-    $hasvar = false;
-    foreach ($_REQUEST as $variable) {
-        if (is_numeric($variable)) {
-            $hasvar = true;
-
-            if (!("delete from tbl_ppt where id = '".$variable."'")) {
-                if (mysqli_errno() == 1451)
-                    $errors[] = "To Prevent accidental delete, system will not allow propagated deleting.<br/><b>Help:</b> If you still want to delete this record, select the record again.";
-                else
-                    $errors[] = mysqli_errno();
-            }
-        }
-    }
-    if (!isset($errors) && $hasvar == true) {
-        $session->message("Selected Record/s are successfully Deleted");
-        header('Location:retmng.php');
-        } else if (!$hasvar) {
-        $errors[] = "First Select the records to be Deleted.";
-    }
-}
-    else if (isset($_REQUEST['submit'])) {
-        if (empty($_REQUEST['bal32']) || empty($_REQUEST['bal64'])) {
-            $errors[] = "Some of the required Fields are Empty.Therefore Nothing is Updated";
-        } else {
-            $query = "update tbl_ppt set opn_bal_32='" . htmlspecialchars($_REQUEST['bal32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['issue32'], ENT_QUOTES) . "',dam_32='" . htmlspecialchars($_REQUEST['dam32'], ENT_QUOTES) . "',stock_bal_32='" . htmlspecialchars($_REQUEST['stockbal32'], ENT_QUOTES) . "',ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_revenue32'], ENT_QUOTES) . "', opn_bal_64='" . htmlspecialchars($_REQUEST['bal64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['issue64'], ENT_QUOTES) . "',dam_64='" . htmlspecialchars($_REQUEST['dam64'], ENT_QUOTES) . "',stock_bal_64='" . htmlspecialchars($_REQUEST['stockbal64'], ENT_QUOTES) . "',ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_revenue64'], ENT_QUOTES) . "' where id='" . htmlspecialchars($_REQUEST['tbl_ppt'], ENT_QUOTES) . "';";
-            if (isset($query));
-                $session->message("User Information is Successfully Updated.");
-        }
-    }
-?>
-    <?php require_once 'inc/header.php'; ?>
+        require_once 'core/init2.php';
+        require_once 'inc/header.php'; ?>
 <!-- Page content -->
 						<div class="container-fluid pt-8">
 							<div class="page-header mt-0 shadow p-3">
@@ -108,17 +74,30 @@
                                 <?php }
                             }
                             ?>
+                        <?php if (isset($_REQUEST['edit'])) {
+                        // the list of allowed field names
+                        $allowed = ["bal32","issue32","dam32","stockbal32","ppt_revenue32"];
 
+                        // initialize an array with values:
+                        $params = [];
 
+                        // initialize a string with `fieldname` = :placeholder pairs
+                        $setStr = "";
 
-                              <?php  if (isset($_REQUEST['edit'])) {
-                                $sql = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" . htmlspecialchars($_REQUEST['edit'], ENT_QUOTES) . "' ");
+                        // loop over source data array
+                        foreach ($allowed as $key)
+                        {
+                            if (isset($_POST[$key]) && $key != "id")
+                            {
+                                $setStr .= "`$key` = :$key,";
+                                $params[$key] = $_POST[$key];
+                            }
+                        }
+                        $setStr = rtrim($setStr, ",");
 
-                                if(mysqli_num_rows($sql) == 0) {
-                                    echo "<h3 style=\"color:#0000cc;text-align:center;\">No Information to display..!</h3>";
-                                }
-                                else if ($r = mysqli_fetch_array($sql)) {
-                             ?>
+                        $params['id'] = $_POST['id'];
+                        $pdo->prepare("UPDATE tbl_ppt SET $setStr WHERE id = :id")->execute($params);
+                        ?>
 
                          <div class="card shadow">
                         <div class="card-body">
@@ -134,31 +113,31 @@
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Opening Stock </div>
                                     <div class="col-md-6">
-                                        <input type="number" class="form-control" name="bal32" value="<?php echo htmlspecialchars_decode($r['opn_bal_32'],ENT_QUOTES); ?>" />
+                                        <input type="number" class="form-control" name="bal32" value="<?php echo htmlspecialchars_decode($pdo['opn_bal_32'],ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Issuance</div>
                                     <div class="col-md-6">
-                                        <input type="number" class="form-control" name="issue32" value="<?php echo htmlspecialchars_decode($r['ppt_32'], ENT_QUOTES); ?>" />
+                                        <input type="number" class="form-control" name="issue32" value="<?php echo htmlspecialchars_decode($pdo['ppt_32'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Damaged</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="dam32" class="form-control" value="<?php echo htmlspecialchars_decode($r['dam_32'],ENT_QUOTES); ?>" />
+                                        <input type="number" name="dam32" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['dam_32'],ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Balance</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="stockbal32" class="form-control" value="<?php echo htmlspecialchars_decode($r['stock_bal_32'], ENT_QUOTES); ?>" />
+                                        <input type="number" name="stockbal32" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['stock_bal_32'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Revenue (in USD)</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="ppt_revenue32" class="form-control" value="<?php echo htmlspecialchars_decode($r['ppt_rev_32'], ENT_QUOTES); ?>" />
+                                        <input type="number" name="ppt_revenue32" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['ppt_rev_32'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -172,37 +151,37 @@
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Opening Stock </div>
                                     <div class="col-md-6">
-                                        <input type="number" class="form-control" name="bal64" value="<?php echo htmlspecialchars_decode($r['opn_bal_64'], ENT_QUOTES); ?>" />
+                                        <input type="number" class="form-control" name="bal64" value="<?php echo htmlspecialchars_decode($pdo['opn_bal_64'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Issuance</div>
                                     <div class="col-md-6">
-                                        <input type="number" class="form-control" name="issue64" value="<?php echo htmlspecialchars_decode($r['ppt_64'], ENT_QUOTES); ?>" />
+                                        <input type="number" class="form-control" name="issue64" value="<?php echo htmlspecialchars_decode($pdo['ppt_64'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Damaged</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="dam64" class="form-control" value="<?php echo htmlspecialchars_decode($r['dam_64'], ENT_QUOTES); ?>" />
+                                        <input type="number" name="dam64" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['dam_64'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Balance</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="stockbal64" class="form-control" value="<?php echo htmlspecialchars_decode($r['stock_bal_64'], ENT_QUOTES); ?>" />
+                                        <input type="number" name="stockbal64" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['stock_bal_64'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                                 <div class="input-group mb-2">
                                     <div class="col-md-6">Revenue (in USD)</div>
                                     <div class="col-md-6">
-                                        <input type="number" name="ppt_revenue64" class="form-control" value="<?php echo htmlspecialchars_decode($r['ppt_rev_64'], ENT_QUOTES); ?>" />
+                                        <input type="number" name="ppt_revenue64" class="form-control" value="<?php echo htmlspecialchars_decode($pdo['ppt_rev_64'], ENT_QUOTES); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group mt-3">
-                                    <textarea class="form-control" name="message" rows="5" value="<?php echo htmlspecialchars_decode($r['comments'], ENT_QUOTES); ?>"></textarea>
+                                    <textarea class="form-control" name="message" rows="5" value="<?php echo htmlspecialchars_decode($pdo['comments'], ENT_QUOTES); ?>"></textarea>
                                 </div>
                                 <div class="form-group mb-0">
                                     <button type="submit" class="btn btn-lg btn-success mt-1 mb-1">Update</button>
@@ -213,11 +192,7 @@
                         </div>
                         </div>
                          </div>
-                      <?php
-                           }
-                      }
-                   ?>
-
+                <?php } ?>
 
 
     <div class="row">
@@ -297,7 +272,7 @@
                         <div class="modal-header">
                             <h2 class="modal-title" ><?php echo $visa['missionid']." ".$visa['month']; ?> VISA RETURN SUMMARY</h2>
                             <button type="button" class="close" aria-label="Close">
-                                <a href="return-manager.php"><span aria-hidden="true">&times;</span></a>
+                                <a href="retmng.php"><span aria-hidden="true">&times;</span></a>
                             </button>
                         </div>
                         <div class="modal-body">

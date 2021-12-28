@@ -1,0 +1,42 @@
+<?php if (isset($_REQUEST['delete'])) {
+    unset ($_REQUEST['delete']);
+    $hasvar = false;
+    foreach ($_REQUEST as $variable) {
+        if (is_numeric($variable)) {
+            $hasvar = true;
+
+            if (!("delete from tbl_ppt where id = '".$variable."'")) {
+                if (mysqli_errno() == 1451)
+                    $errors[] = "To Prevent accidental delete, system will not allow propagated deleting.<br/><b>Help:</b> If you still want to delete this record, select the record again.";
+                else
+                    $errors[] = mysqli_errno();
+            }
+        }
+    }
+    if (!isset($errors) && $hasvar == true) {
+        $session->message("Selected Record/s are successfully Deleted");
+        header('Location:retmng.php');
+        } else if (!$hasvar) {
+        $errors[] = "First Select the records to be Deleted.";
+    }
+}
+    else if (isset($_REQUEST['submit'])) {
+        if (empty($_REQUEST['bal32']) || empty($_REQUEST['bal64'])) {
+            $errors[] = "Some of the required Fields are Empty.Therefore Nothing is Updated";
+        } else {
+            $query = "update tbl_ppt set opn_bal_32='" . htmlspecialchars($_REQUEST['bal32'], ENT_QUOTES) . "', ppt_32='" . htmlspecialchars($_REQUEST['issue32'], ENT_QUOTES) . "',dam_32='" . htmlspecialchars($_REQUEST['dam32'], ENT_QUOTES) . "',stock_bal_32='" . htmlspecialchars($_REQUEST['stockbal32'], ENT_QUOTES) . "',ppt_rev_32='" . htmlspecialchars($_REQUEST['ppt_revenue32'], ENT_QUOTES) . "', opn_bal_64='" . htmlspecialchars($_REQUEST['bal64'], ENT_QUOTES) . "', ppt_64='" . htmlspecialchars($_REQUEST['issue64'], ENT_QUOTES) . "',dam_64='" . htmlspecialchars($_REQUEST['dam64'], ENT_QUOTES) . "',stock_bal_64='" . htmlspecialchars($_REQUEST['stockbal64'], ENT_QUOTES) . "',ppt_rev_64='" . htmlspecialchars($_REQUEST['ppt_revenue64'], ENT_QUOTES) . "' where id='" . htmlspecialchars($_REQUEST['tbl_ppt'], ENT_QUOTES) . "';";
+            if (isset($query));
+                $session->message("User Information is Successfully Updated.");
+        }
+    }
+?>
+
+
+                              <?php  if (isset($_REQUEST['edit'])) {
+                                $sql = mysqli_query($con, "SELECT * FROM tbl_ppt WHERE id='" . htmlspecialchars($_REQUEST['edit'], ENT_QUOTES) . "' ");
+
+                                if(mysqli_num_rows($sql) == 0) {
+                                    echo "<h3 style=\"color:#0000cc;text-align:center;\">No Information to display..!</h3>";
+                                }
+                                else if ($r = mysqli_fetch_array($sql)) {
+                             ?>
